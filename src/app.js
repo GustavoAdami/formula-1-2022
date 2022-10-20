@@ -1,27 +1,30 @@
 const { F122UDP } = require("f1-22-udp");
 const { getLocalIPv4 } = require('./utils/utils');
 const { logger } = require('./utils/logger');
-const player = require("play-sound")((opts = {}));
+const { exec } = require('child_process');
+const sound = require("sound-play");
+const { handleEvent } = require('./logic/events');
+const { handleLapData } = require("./logic/lapData");
 
 const f122 = new F122UDP({
   address: getLocalIPv4(),
 });
 
-/* Telemetry Toggles */
-const readMotion = true;              /* Contains all motion data for player’s car – only sent while player is in control */
-const readSession = true;             /* Data about the session – track, time left */
-const readLapData = true;             /* Data about all the lap times of cars in the session */
-const readEvent = true;               /* Various notable events that happen during a session */
-const readParticipants = true;        /** List of participants in the session, mostly relevant for multiplayer */
-const readCarSetups = true;           /** Packet detailing car setups for cars in the race */
-const readCarTelemetry = true;        /** Telemetry data for all cars */
-const readCarStatus = true;           /** Status data for all cars */
-const readFinalClassification = true; /** Final classification confirmation at the end of a race */
-const readLobbyInfo = true;           /** Information about players in a multiplayer lobby */
-const readCarDamage = true;           /** Damage status for all cars */
-const readSessionHistory = true;      /** Lap and tyre data for session */
+/** Telemetry Toggles */
+const readMotion = false;              /** Contains all motion data for player’s car – only sent while player is in control */
+const readSession = false;             /** Data about the session – track, time left */
+const readLapData = false;             /** Data about all the lap times of cars in the session */
+const readEvent = true;                /** Various notable events that happen during a session */
+const readParticipants = false;        /** List of participants in the session, mostly relevant for multiplayer */
+const readCarSetups = false;           /** Packet detailing car setups for cars in the race */
+const readCarTelemetry = false;        /** Telemetry data for all cars */
+const readCarStatus = false;           /** Status data for all cars */
+const readFinalClassification = false; /** Final classification confirmation at the end of a race */
+const readLobbyInfo = false;           /** Information about players in a multiplayer lobby */
+const readCarDamage = false;           /** Damage status for all cars */
+const readSessionHistory = false;      /** Lap and tyre data for session */
 
-/* Player Properties */
+/** Player Properties */ // TODO: Refactor
 let driverName = "";
 let driverIndex = -1;
 let currentPosition = -1;
@@ -44,10 +47,7 @@ if (readMotion) {
 
 if (readEvent) {
   f122.on("event", (eventData) => {
-    console.log("EVENT", eventData);
-    /*
-     * TODO: Lights out - Audio
-     */
+    handleEvent(eventData);
   });
 }
 
@@ -83,7 +83,8 @@ if (readFinalClassification) {
 
 if (readLapData) {
   f122.on("lapData", (lapData) => {
-    logger.log('LAP DATA', lapData);
+    // handleLapData(lapData); TODO: refactor
+
     if (currentPosition === -1 && lapData.m_lapData[carIndex]) {
       console.log("LAP DATA", lapData.m_lapData[carIndex]);
 
@@ -105,9 +106,7 @@ if (readLapData) {
 		 * TODO: Put audio in a queue to play them in sequence and not cut the one that is playing.
 		 * TODO: Several audios per driver. Random
 		 */
-        player.play("res/vettel-trimmed.mp3", function (err) {
-          if (err) throw err;
-        });
+      sound.play("./assets/audio/vettel-trimmed.mp3");
       }
 
       console.log(
@@ -133,7 +132,7 @@ if (readParticipants) {
     logger.log('PARTICIPANTS', participantsData);
     console.log('PARTICIPANTS', participantsData);
 
-	/* Update driver properties */
+	/* Update driver properties */ // TODO: refactor
     participantsData.m_participants.forEach((participant) => {
       if (driverName === "" && participant.m_name === "VETTEL") {
         console.log("Updating Driver Name and Index");
@@ -162,4 +161,8 @@ if (readSessionHistory) {
 f122.on("error", (errorData) => {
   logger.error('ERROR', errorData);
   console.log("ERROR", errorData);
+});
+
+f122.on("other", (otherData) => {
+  console.log("OTHER", otherData);
 });
