@@ -27,6 +27,7 @@ try {
 }
 
 console.info("Formula 1 Telemetry Running\n");
+console.log('Test');
 
 if (readMotion) {
   f122.on("motion", function (motionData) {
