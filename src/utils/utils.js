@@ -23,7 +23,11 @@ function getNetworkInterfaces() {
 }
 
 const getLocalIPv4 = () => {
-  return getNetworkInterfaces()["Wi-Fi"][0];
-}
+  const networkInterfaces = getNetworkInterfaces();
+
+  return networkInterfaces["Ethernet 2"][0]
+    ? networkInterfaces["Ethernet 2"][0]
+    : networkInterfaces["Wi-Fi"][0];
+};
 
 exports.getLocalIPv4 = getLocalIPv4;

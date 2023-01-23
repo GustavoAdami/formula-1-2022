@@ -1,27 +1,21 @@
-const { Console } = require("console");
 const fs = require("fs");
 
-// FIXME: refactor logger. File is overwritten everytime app runs.
-// make a new logger
-const logger = new Console({
-    stdout: fs.createWriteStream("logs/logs.txt"),
-    stderr: fs.createWriteStream("logs/error_logs.txt"),
-  });
-  
-  // // saving to normalStdout.txt file
-  // myLogger.log("Hello 😃. This will be saved in normalStdout.txt file");
-  
-  // // saving to errStdErr.txt file
-  // myLogger.error("Its an error ❌. This will be saved in errStdErr.txt file");
+// FIXME: refactor logger
+function logger(type, message) {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
 
-//   const logger = (sessionId) => {
-//     const log = new Console({
-//         stdout: fs.createWriteStream(`logs/logs_${sessionId}.txt`),
-//         stderr: fs.createWriteStream(`logs/error_logs_${sessionId}.txt`),
-//       });
+  const monthTxt = month < 10 ? "0" + month : month;
 
+  fs.appendFile(
+    `logs\\${year}-${monthTxt}-${day}_logs.txt`,
+    '{"' + type + '": ' + JSON.stringify(message) + "}\n",
+    function (err) {
+      if (err) throw err;
+    }
+  );
+}
 
-//     return logger;
-//   } 
-
-  exports.logger = logger;
+exports.logger = logger;
