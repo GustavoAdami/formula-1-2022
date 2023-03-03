@@ -4,10 +4,10 @@ const packetType = "SESSION";
 const saveLogs = true;
 
 const handleSession = (sessionData) => {
-  console.log(packetType, carDamageData);
+  console.log(packetType, sessionData);
 
   if (saveLogs) {
-    logger(packetType, carDamageData);
+    logger(packetType, sessionData);
   }
 };
 
