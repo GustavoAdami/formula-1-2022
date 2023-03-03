@@ -25,9 +25,21 @@ function getNetworkInterfaces() {
 const getLocalIPv4 = () => {
   const networkInterfaces = getNetworkInterfaces();
 
-  return networkInterfaces["Ethernet 2"][0]
+  return networkInterfaces["Ethernet 2"]
     ? networkInterfaces["Ethernet 2"][0]
     : networkInterfaces["Wi-Fi"][0];
 };
+
+function convertMsToMinutes(timeInMs) {
+    const seconds = Math.floor((timeInMs / 1000) % 60);
+    const minutes = Math.floor((timeInMs / 1000 / 60) % 60);
+    const milliseconds = Math.floor(timeInMs % 1000);
+
+    return [
+        minutes.toString(),
+        seconds.toString().padStart(2, "0"),
+        milliseconds.toString().padStart(2, "0"),
+    ].join(":");
+}
 
 exports.getLocalIPv4 = getLocalIPv4;

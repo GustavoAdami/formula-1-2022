@@ -1,16 +1,16 @@
 const nReadlines = require("n-readlines");
 const { handleEvent } = require("../logic/events");
-const { handleLapData } = require("../logic/lapData");
 const { handleMotion } = require("../logic/motion");
+const { handleLapData } = require("../logic/lapData");
+const { handleSession } = require("../logic/session");
 const { handleCarDamage } = require("../logic/carDamage");
 const { handleCarSetups } = require("../logic/carSetups");
 const { handleCarStatus } = require("../logic/carStatus");
-const { handleCarTelemetry } = require("../logic/carTelemetry");
-const { handleFinalClassification } = require("../logic/finalClassification");
 const { handleLobbyData } = require("../logic/lobbyInfo");
+const { handleCarTelemetry } = require("../logic/carTelemetry");
 const { handleParticipants } = require("../logic/participants");
-const { handleSession } = require("../logic/session");
 const { handleSessionHistory } = require("../logic/sessionHistory");
+const { handleFinalClassification } = require("../logic/finalClassification");
 
 function readLogs() {
   const logFile = "logs\\2023-01-17_3-Brazil_logs.txt"; // SampleLog.txt

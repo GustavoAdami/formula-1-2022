@@ -1,9 +1,15 @@
 const { logger } = require("../utils/logger");
 // const sound = require("sound-play");
 
+const packetType = "LAP_DATA";
+const saveLogs = true;
+
 const handleLapData = (lapData) => {
-  console.log("LAP DATA", lapData);
-  logger("LAP DATA", lapData);
+  console.log(packetType, lapData);
+
+  if (saveLogs) {
+    logger(packetType, lapData);
+  }
 
   /** TODO: gotta fix PARTICIPANTS */
 

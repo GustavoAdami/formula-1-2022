@@ -1,9 +1,15 @@
 const { logger } = require("../utils/logger");
 const sound = require("sound-play");
 
+const packetType = "EVENT";
+const saveLogs = true;
+
 const handleEvent = (eventData) => {
-  console.log("EVENT", eventData);
-  logger("EVENT", eventData);
+  console.log(packetType, eventData);
+
+  if (saveLogs) {
+    logger(packetType, eventData);
+  }
 
   if (typeof eventData === "string") {
     eventData = JSON.parse(eventData);

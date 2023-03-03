@@ -30,6 +30,8 @@ client.send(packet, port, hostname, (err) => {
   if (err) {
     console.error("Failed to send packet`!");
   }
+
+  console.log('Packet sent');
   client.close();
 });
 
