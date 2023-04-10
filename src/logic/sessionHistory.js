@@ -15,8 +15,7 @@ const handleSessionHistory = (sessionHistoryData, sessionConsolidated) => {
   }
 
   if (sessionConsolidated.sessionId !== sessionHistoryData.m_header.m_sessionUID) {
-    console.log("SESSION ID NOT MATCHED");
-    // return;
+    console.log("SESSION ID NOT MATCHED - HISTORY");
   }
 
   if (sessionConsolidated.finalClassification) {
@@ -25,18 +24,18 @@ const handleSessionHistory = (sessionHistoryData, sessionConsolidated) => {
       sessionConsolidated.sessionHistory.players = [];
     }
 
-    if (sessionConsolidated.sessionHistory.players.length < sessionConsolidated.finalClassification.numCars) {
+    if (sessionConsolidated.sessionHistory?.players.length < sessionConsolidated.finalClassification.numCars) {
       sessionConsolidated.sessionHistory.players.push(sessionHistoryData);
 
-      if (sessionConsolidated.sessionHistory.players.length === sessionConsolidated.finalClassification.numCars) {
+      if (sessionConsolidated.sessionHistory?.players.length === sessionConsolidated.finalClassification.numCars) {
         console.log("SESSION CONSOLIDATED", sessionConsolidated);
         logger("SUMMARY", sessionConsolidated);
+        sessionConsolidated.reset = true;
       }
     }
-    
-
-
   }
+
+  return sessionConsolidated;
 };
 
 exports.handleSessionHistory = handleSessionHistory;

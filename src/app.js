@@ -30,11 +30,12 @@ let readFinalClassification = true; /** Final classification confirmation at the
 let readLobbyInfo = true; /** Information about players in a multiplayer lobby */
 let readCarDamage = true; /** Damage status for all cars */
 let readSessionHistory = true; /** Lap and tyre data for session */
-
-let sessionConsolidated = {};
+let sessionConsolidated = null;
 
 try {
   f122.start();
+  sessionConsolidated = {};
+  
   console.info("Formula 1 Telemetry Running\n");
 } catch (error) {
   console.error("Error Starting Telemetry", error);
@@ -48,7 +49,13 @@ if (readMotion) {
 
 if (readEvent) {
   f122.on("event", (eventData) => {
-    handleEvent(eventData, sessionConsolidated);
+    const eventSummary = handleEvent(eventData);
+
+    if (sessionConsolidated.reset) {
+      sessionConsolidated = {};
+    } else {
+      sessionConsolidated = { ...sessionConsolidated, ...eventSummary };
+    }
   });
 }
 
@@ -78,7 +85,8 @@ if (readCarTelemetry) {
 
 if (readFinalClassification) {
   f122.on("finalClassification", (finalClassificationData) => {
-    handleFinalClassification(finalClassificationData, sessionConsolidated);
+    const finalClassificationSummary = handleFinalClassification(finalClassificationData, sessionConsolidated);
+    sessionConsolidated = { ...sessionConsolidated, ...finalClassificationSummary };
   });
 }
 
@@ -94,31 +102,31 @@ if (readLobbyInfo) {
   });
 }
 
-let addedParticipants = false;
-
 if (readParticipants) {
+  let addedParticipants = false;
+
   f122.on("participants", (participantsData) => {
+    handleParticipants(participantsData);
+
     if (!addedParticipants) {
       addedParticipants = true;
       sessionConsolidated.participants = participantsData;
     }
-
-    handleParticipants(participantsData);
   });
 }
 
 if (readSession) {
   f122.on("session", (sessionData) => {
-    handleSession(sessionData, sessionConsolidated);
+    const sessionSummary = handleSession(sessionData, sessionConsolidated);
+    sessionConsolidated = { ...sessionConsolidated, ...sessionSummary };
   });
 }
 
 if (readSessionHistory) {
   f122.on("sessionHistory", (sessionHistoryData) => {
     if (!sessionConsolidated.inProgress) {
-      // console.log("SESSION HISTORY", sessionHistoryData);
-      handleSessionHistory(sessionHistoryData,  sessionConsolidated);
-
+      const sessionHistorySummary = handleSessionHistory(sessionHistoryData,  sessionConsolidated);
+      sessionConsolidated = { ...sessionConsolidated, ...sessionHistorySummary };
     }
   });
 }

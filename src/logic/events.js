@@ -6,16 +6,16 @@ const saveLogs = false;
 
 const handleEvent = (eventData) => {
   // console.log(packetType, eventData);
-
+  
   if (saveLogs) {
     logger(packetType, eventData);
   }
 
+  const eventSummary = {};
+
   if (typeof eventData === "string") {
     eventData = JSON.parse(eventData);
   }
-
-  let obj = {};
 
   switch (eventData.m_eventStringCode) {
     case "LGOT":
@@ -24,22 +24,21 @@ const handleEvent = (eventData) => {
 
     case "SSTA":
       console.log("Session Started");
-      // sessionConsolidated = {};
-      sessionConsolidated.sessionId = eventData.m_header.m_sessionUID;
-      sessionConsolidated.playerCarIndex = eventData.m_header.m_playerCarIndex;
-      sessionConsolidated.inProgress = true;
+      eventSummary.sessionId = eventData.m_header.m_sessionUID;
+      eventSummary.playerCarIndex = eventData.m_header.m_playerCarIndex;
+      eventSummary.inProgress = true;
       break;
 
     case "SEND":
       console.log("Session Ended");
-      sessionConsolidated.inProgress = false;
+      eventSummary.inProgress = false;
       break;
 
     default:
       break;
   }
 
-  // return sessionConsolidated;
+  return eventSummary;
 };
 
 function lightsOut() {
