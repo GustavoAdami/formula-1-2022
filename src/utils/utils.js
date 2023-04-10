@@ -25,9 +25,11 @@ function getNetworkInterfaces() {
 const getLocalIPv4 = () => {
   const networkInterfaces = getNetworkInterfaces();
 
-  return networkInterfaces["Ethernet 2"]
+  const localIPv4 = networkInterfaces["Ethernet 2"]
     ? networkInterfaces["Ethernet 2"][0]
     : networkInterfaces["Wi-Fi"][0];
+
+  return localIPv4 ? localIPv4 : "127.0.0.1";
 };
 
 function convertMsToMinutes(timeInMs) {

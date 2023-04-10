@@ -2,10 +2,10 @@ const { logger } = require("../utils/logger");
 const sound = require("sound-play");
 
 const packetType = "EVENT";
-const saveLogs = true;
+const saveLogs = false;
 
 const handleEvent = (eventData) => {
-  console.log(packetType, eventData);
+  // console.log(packetType, eventData);
 
   if (saveLogs) {
     logger(packetType, eventData);
@@ -15,14 +15,31 @@ const handleEvent = (eventData) => {
     eventData = JSON.parse(eventData);
   }
 
+  let obj = {};
+
   switch (eventData.m_eventStringCode) {
     case "LGOT":
       lightsOut();
       break;
 
+    case "SSTA":
+      console.log("Session Started");
+      // sessionConsolidated = {};
+      sessionConsolidated.sessionId = eventData.m_header.m_sessionUID;
+      sessionConsolidated.playerCarIndex = eventData.m_header.m_playerCarIndex;
+      sessionConsolidated.inProgress = true;
+      break;
+
+    case "SEND":
+      console.log("Session Ended");
+      sessionConsolidated.inProgress = false;
+      break;
+
     default:
       break;
   }
+
+  // return sessionConsolidated;
 };
 
 function lightsOut() {

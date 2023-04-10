@@ -1,10 +1,10 @@
 const { logger } = require("../utils/logger");
 
 const packetType = "MOTION";
-const saveLogs = true;
+const saveLogs = false;
 
 const handleMotion = (motionData) => {
-  console.log(packetType, motionData);
+  // console.log(packetType, motionData);
 
   if (saveLogs) {
     logger(packetType, motionData);

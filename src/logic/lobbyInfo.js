@@ -1,10 +1,10 @@
 const { logger } = require("../utils/logger");
 
 const packetType = "LOBBY_INFO";
-const saveLogs = true;
+const saveLogs = false;
 
 const handleLobbyData = (lobbyData) => {
-  console.log(packetType, lobbyData);
+  // console.log(packetType, lobbyData);
 
   if (saveLogs) {
     logger(packetType, lobbyData);

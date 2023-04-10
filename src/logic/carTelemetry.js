@@ -1,10 +1,10 @@
 const { logger } = require("../utils/logger");
 
 const packetType = "CAR_TELEMETRY";
-const saveLogs = true;
+const saveLogs = false;
 
 const handleCarTelemetry = (carTelemetryData) => {
-  console.log(packetType, carTelemetryData);
+  // console.log(packetType, carTelemetryData);
 
   if (saveLogs) {
     logger(packetType, carTelemetryData);

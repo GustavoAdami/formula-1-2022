@@ -2,10 +2,10 @@ const { logger } = require("../utils/logger");
 // const sound = require("sound-play");
 
 const packetType = "LAP_DATA";
-const saveLogs = true;
+const saveLogs = false;
 
 const handleLapData = (lapData) => {
-  console.log(packetType, lapData);
+  // console.log(packetType, lapData);
 
   if (saveLogs) {
     logger(packetType, lapData);

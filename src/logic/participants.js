@@ -1,10 +1,10 @@
 const { logger } = require("../utils/logger");
 
 const packetType = "PARTICIPANTS";
-const saveLogs = true;
+const saveLogs = false;
 
 const handleParticipants = (participantsData) => {
-  console.log(packetType, participantsData);
+  // console.log(packetType, participantsData);
 
   if (saveLogs) {
     logger(packetType, participantsData);

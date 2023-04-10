@@ -18,18 +18,20 @@ const f122 = new F122UDP({
 });
 
 /** Telemetry Toggles */
-const readMotion = true; /** Contains all motion data for player’s car – only sent while player is in control */
-const readSession = true; /** Data about the session – track, time left */
-const readLapData = true; /** Data about all the lap times of cars in the session */
-const readEvent = true; /** Various notable events that happen during a session */
-const readParticipants = true; /** List of participants in the session, mostly relevant for multiplayer */
-const readCarSetups = true; /** Packet detailing car setups for cars in the race */
-const readCarTelemetry = true; /** Telemetry data for all cars */
-const readCarStatus = true; /** Status data for all cars */
-const readFinalClassification = true; /** Final classification confirmation at the end of a race */
-const readLobbyInfo = true; /** Information about players in a multiplayer lobby */
-const readCarDamage = true; /** Damage status for all cars */
-const readSessionHistory = true; /** Lap and tyre data for session */
+let readMotion = true; /** Contains all motion data for player’s car – only sent while player is in control */
+let readSession = true; /** Data about the session – track, time left */
+let readLapData = true; /** Data about all the lap times of cars in the session */
+let readEvent = true; /** Various notable events that happen during a session */
+let readParticipants = true; /** List of participants in the session, mostly relevant for multiplayer */
+let readCarSetups = true; /** Packet detailing car setups for cars in the race */
+let readCarTelemetry = true; /** Telemetry data for all cars */
+let readCarStatus = true; /** Status data for all cars */
+let readFinalClassification = true; /** Final classification confirmation at the end of a race */
+let readLobbyInfo = true; /** Information about players in a multiplayer lobby */
+let readCarDamage = true; /** Damage status for all cars */
+let readSessionHistory = true; /** Lap and tyre data for session */
+
+let sessionConsolidated = {};
 
 try {
   f122.start();
@@ -46,7 +48,7 @@ if (readMotion) {
 
 if (readEvent) {
   f122.on("event", (eventData) => {
-    handleEvent(eventData);
+    handleEvent(eventData, sessionConsolidated);
   });
 }
 
@@ -76,7 +78,7 @@ if (readCarTelemetry) {
 
 if (readFinalClassification) {
   f122.on("finalClassification", (finalClassificationData) => {
-    handleFinalClassification(finalClassificationData);
+    handleFinalClassification(finalClassificationData, sessionConsolidated);
   });
 }
 
@@ -92,21 +94,32 @@ if (readLobbyInfo) {
   });
 }
 
+let addedParticipants = false;
+
 if (readParticipants) {
   f122.on("participants", (participantsData) => {
+    if (!addedParticipants) {
+      addedParticipants = true;
+      sessionConsolidated.participants = participantsData;
+    }
+
     handleParticipants(participantsData);
   });
 }
 
 if (readSession) {
   f122.on("session", (sessionData) => {
-    handleSession(sessionData);
+    handleSession(sessionData, sessionConsolidated);
   });
 }
 
 if (readSessionHistory) {
   f122.on("sessionHistory", (sessionHistoryData) => {
-    handleSessionHistory(sessionHistoryData);
+    if (!sessionConsolidated.inProgress) {
+      // console.log("SESSION HISTORY", sessionHistoryData);
+      handleSessionHistory(sessionHistoryData,  sessionConsolidated);
+
+    }
   });
 }
 
